@@ -50,7 +50,23 @@ if (!isset($_SESSION['user_id'])) {
 <div class="content">
     <h1>Dashboard</h1>
     <p>This is your main navigation hub.</p>
+    <h2>Upload Profile Image</h2>
+    <form action="upload_image.php" method="POST" enctype="multipart/form-data">
+        <input type="file" name="profile_image" accept="image/*" required>
+        <button type="submit">Upload Image</button>
+    </form>
+
+    <?php
+    // Display uploaded image if exists
+    $imagePath = 'uploads/' . htmlspecialchars($_SESSION['username']) . '.jpg';
+    if (file_exists($imagePath)) {
+        echo '<h3>Your Profile Image:</h3>';
+        echo '<img src="' . $imagePath . '" alt="Profile Image" style="max-width:300px;">';
+    }
+    ?>
 </div>
+
+
 
 </body>
 </html>

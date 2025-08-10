@@ -58,16 +58,17 @@ if (!isset($_SESSION['user_id'])) {
 
     <?php
     // Display uploaded image if exists
-    $imageParam = $_GET['img'] ?? ($_SESSION['username'] . '.jpg');
-$imagePath = 'uploads/' . $imageParam;
+   $imageParam = $_GET['img'] ?? ('default' . '.jpg');
+    $imagePath = 'uploads/' . $imageParam;
 
-if (file_exists($imagePath)) {
+    if (file_exists($imagePath)) {
     echo '<h3>Your Profile Image:</h3>';
     // Note: no escaping of $imagePath here
-    echo '<img src="' . $imagePath . '" alt="Profile Image" style="max-width:300px;">';
-} else {
+    echo '<img src="view_image.php?img=default.jpg" alt="Profile Image">
+';
+    } else {
     echo "Image not found.";
-}
+    }
     ?>
 </div>
 

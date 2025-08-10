@@ -16,6 +16,26 @@ if (!is_dir($uploadDir)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_image'])) {
     $file = $_FILES['profile_image'];
 
+    // Get filename from user input (vulnerable!)
+    $filename = $_POST['filename'] ?? 'default.jpg';
+
+    // Here you directly use the user-controlled filename without validation
+    $targetPath = $uploadDir . '/' . $filename;
+
+    // Then move the uploaded file
+    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        header('Location: dashboard.php');
+        exit();
+    } else {
+        echo "Failed to move uploaded file.";
+    }
+}
+
+
+/*
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_image'])) {
+    $file = $_FILES['profile_image'];
+
     // Basic validation: check for errors and file type
     if ($file['error'] === UPLOAD_ERR_OK) {
         $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -37,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_image'])) {
     } else {
         echo "Error uploading file.";
     }
-} else {
+} 
+*/ else {
     echo "No file uploaded.";
 }

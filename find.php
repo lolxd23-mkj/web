@@ -7,23 +7,15 @@ if (!isset($_SESSION['user_id'])) {
 
 $q = ($_GET['q'] ?? '');
 
-if ($q !== '') {
-    // Directly injecting $q into SQL without escaping or parameter binding
-    $sql = "
+
+$sql = "
         SELECT posts.id, posts.title, posts.content, posts.created_at, users.username
         FROM posts
         JOIN users ON posts.user_id = users.id
         WHERE posts.title LIKE '%$q%' OR posts.content LIKE '%$q%'
         ORDER BY posts.created_at DESC
-    ";
-} else {
-    $sql = "
-        SELECT posts.id, posts.title, posts.content, posts.created_at, users.username
-        FROM posts
-        JOIN users ON posts.user_id = users.id
-        ORDER BY posts.created_at DESC
-    ";
-}
+";
+
 $res = $conn->query($sql);
 
 // ------------------------------------------

@@ -12,11 +12,17 @@ $sql = "
         SELECT posts.id, posts.title, posts.content, posts.created_at, users.username
         FROM posts
         JOIN users ON posts.user_id = users.id
-        WHERE posts.title LIKE '%$q%' OR posts.content LIKE '%$q%'
+        WHERE posts.title LIKE '%".$q."%' OR posts.content LIKE '%".$q."%'
         ORDER BY posts.created_at DESC
 ";
 
-$res = $conn->query($sql);
+try {
+    $res = $conn->query($sql);
+} catch (mysqli_sql_exception $e) {
+    // Display SQL error (this is what makes it error-based injectable)
+    echo '<h2>SQL Error:</h2><pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
+    exit;
+}
 
 // ------------------------------------------
 // ✅ Secure version using prepared statements (Mitigation)

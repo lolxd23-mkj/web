@@ -5,7 +5,7 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$q = trim($_GET['q'] ?? '');
+$q = ($_GET['q'] ?? '');
 
 if ($q !== '') {
     // Directly injecting $q into SQL without escaping or parameter binding

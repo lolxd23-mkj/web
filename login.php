@@ -1,5 +1,11 @@
 <?php
 require_once 'init.php';
+// Show all PHP errors
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Don't let mysqli auto-throw
+mysqli_report(MYSQLI_REPORT_OFF);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
@@ -11,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "SELECT id, password FROM users WHERE username = '$username'";
         $res = $conn->query($sql);
 
+        if (!$res) {
+            die("<b>MySQL error:</b> " . htmlspecialchars($conn->error));
+        }
 
         if ($res && $u = $res->fetch_assoc()) {
             // Using password_verify to check password hash (you can remove this check to simplify vulnerability)

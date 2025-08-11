@@ -6,6 +6,8 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -42,7 +44,7 @@ if (!isset($_SESSION['user_id'])) {
 <nav>
     <span>Welcome, <?php echo htmlspecialchars($_SESSION['username']); ?></span>
     <a href="dashboard.php">Home</a>
-    <a href="profile.php">Profile</a>
+    <a href="find.php">Find</a>
     <a href="settings.php">Settings</a>
     <a href="logout.php">Logout</a>
 </nav>
@@ -58,18 +60,46 @@ if (!isset($_SESSION['user_id'])) {
 
     <?php
     // Display uploaded image if exists
-   $imageParam = $_GET['img'] ?? ('default' . '.jpg');
+    $imageParam = $_GET['img'] ?? ('default' . '.jpg');
     $imagePath = 'uploads/' . $imageParam;
 
     if (file_exists($imagePath)) {
     echo '<h3>Your Profile Image:</h3>';
     // Note: no escaping of $imagePath here
-    echo '<img src="view_image.php?img=default.jpg" alt="Profile Image">
+    $image = htmlspecialchars($_SESSION['username'] , ENT_QUOTES);
+    echo '<img src="view_image.php?img='.$image.'.jpg" alt="Profile Image">
 ';
     } else {
     echo "Image not found.";
     }
     ?>
+
+    <?php
+
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+
+    /* Mitigation: only allow filenames with safe characters (no ../)
+    if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $page)) {
+        die('Invalid file name.');
+    }
+    */
+    $filepath = __DIR__ . '/' . $page;
+
+    if (file_exists($filepath)) {
+        include $filepath;
+    } else {
+        echo "File not found.";
+    }
+    echo '<img src="view_image.php?img='.$filepath.'" alt="Profile Image">';
+}
+?>
+
+<h2>Load Page</h2>
+<form method="GET" action="">
+    <input type="text" name="page" placeholder="Enter file path or page name">
+    <button type="submit">Load</button>
+</form>
 </div>
 
 

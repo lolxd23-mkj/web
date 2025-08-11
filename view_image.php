@@ -1,8 +1,14 @@
 <?php
 // serve_image.php
+session_start();
 
-$imageParam = $_GET['img'] ?? 'default.jpg';
-$baseDir = __DIR__ . '/uploads/';
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit();
+}
+$imageParam = $_GET['img'] ?? ($_SESSION['username'] . '.jpg');
+$baseDir = __DIR__.'/uploads/';
 
 // Resolve the real absolute path of the requested file
 $path = ($baseDir . $imageParam); //realPath

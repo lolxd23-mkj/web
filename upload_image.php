@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_image'])) {
     $file = $_FILES['profile_image'];
 
     // Get filename from user input (vulnerable!)
-    $filename = $_POST['filename'] ?? 'default.jpg';
+    $filename = $_POST['filename'] ?? ($_SESSION['username'] . '.jpg');
 
     // Here you directly use the user-controlled filename without validation
     $targetPath = $uploadDir . '/' . $filename;

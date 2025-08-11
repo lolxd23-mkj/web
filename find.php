@@ -1,4 +1,11 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Don't let mysqli auto-throw
+mysqli_report(MYSQLI_REPORT_OFF);
+
 require_once 'init.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -13,17 +20,15 @@ $sql = "
         FROM posts
         JOIN users ON posts.user_id = users.id
         WHERE posts.title LIKE '%".$q."%' OR posts.content LIKE '%".$q."%'
-        ORDER BY posts.created_at DESC
+        
 ";
 
-try {
-    $res = $conn->query($sql);
-} catch (mysqli_sql_exception $e) {
-    // Display SQL error (this is what makes it error-based injectable)
-    echo '<h2>SQL Error:</h2><pre>' . htmlspecialchars($e->getMessage()) . '</pre>';
-    exit;
-}
 
+$res = $conn->query($sql);
+
+if (!$res) {
+            die("<b>MySQL error:</b> " . htmlspecialchars($conn->error));
+}
 // ------------------------------------------
 // ✅ Secure version using prepared statements (Mitigation)
 // Uncomment to use safely:

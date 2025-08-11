@@ -8,18 +8,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username === '' || $password === '') {
         $error = "Username and password required.";
     } else {
-        $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-        $stmt->bind_param('s', $username);
-        $stmt->execute();
-        $u = $stmt->get_result()->fetch_assoc();
+        $sql = "SELECT id, password FROM users WHERE username = '$username'";
+        $res = $conn->query($sql);
 
-        if ($u && password_verify($password, $u['password'])) {
-            // Good login: regenerate session id
-            session_regenerate_id(true);
-            $_SESSION['user_id'] = (int)$u['id'];
-            $_SESSION['username'] = $username;
-            header('Location: find.php');
-            exit();
+
+        if ($res && $u = $res->fetch_assoc()) {
+            // Using password_verify to check password hash (you can remove this check to simplify vulnerability)
+            if (password_verify($password, $u['password'])) {
+                session_regenerate_id(true);
+                $_SESSION['user_id'] = (int)$u['id'];
+                $_SESSION['username'] = $username;
+                header('Location: dashboard.php');
+                exit();
+            } else {
+                $error = "Invalid username or password.";
+            }
         } else {
             $error = "Invalid username or password.";
         }
